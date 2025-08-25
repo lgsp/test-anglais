@@ -1,0 +1,573 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test de Niveau d'Anglais</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .test-header {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .test-header h1 {
+            color: #4a5568;
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+
+        .test-header p {
+            color: #718096;
+            font-size: 1.1em;
+        }
+
+        .question-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            margin-bottom: 20px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        .question-container:hover {
+            transform: translateY(-2px);
+        }
+
+        .question-header {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            padding: 20px;
+            color: white;
+        }
+
+        .question-number {
+            font-size: 0.9em;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .question-text {
+            font-size: 1.2em;
+            font-weight: 500;
+        }
+
+        .question-level {
+            font-size: 0.8em;
+            opacity: 0.8;
+            margin-top: 5px;
+        }
+
+        .options {
+            padding: 25px;
+        }
+
+        .option {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .option:hover {
+            background: #f7fafc;
+            border-color: #4facfe;
+        }
+
+        .option.selected {
+            background: #ebf8ff;
+            border-color: #4facfe;
+            color: #2b6cb0;
+        }
+
+        .option input[type="radio"] {
+            margin-right: 15px;
+            transform: scale(1.2);
+        }
+
+        .submit-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+
+        .submit-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            border-radius: 50px;
+            font-size: 1.2em;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 7px 20px rgba(0,0,0,0.3);
+        }
+
+        .results {
+            display: none;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-top: 30px;
+        }
+
+        .results.show {
+            display: block;
+        }
+
+        .score-display {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .score-circle {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .level-badge {
+            display: inline-block;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-size: 1.3em;
+            font-weight: bold;
+            color: white;
+            margin: 10px 0;
+        }
+
+        .level-A1 { background: linear-gradient(135deg, #ff6b6b, #ee5a52); }
+        .level-A2 { background: linear-gradient(135deg, #ffa500, #ff8c00); }
+        .level-B1 { background: linear-gradient(135deg, #4ecdc4, #44a08d); }
+        .level-B2 { background: linear-gradient(135deg, #45b7d1, #4facfe); }
+        .level-C1 { background: linear-gradient(135deg, #667eea, #764ba2); }
+        .level-C2 { background: linear-gradient(135deg, #654ea3, #eaafc8); }
+
+        .level-description {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+        }
+
+        .answers-section {
+            margin-top: 30px;
+        }
+
+        .answer-item {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            border-left: 4px solid #e2e8f0;
+        }
+
+        .answer-item.correct {
+            border-left-color: #48bb78;
+            background: #f0fff4;
+        }
+
+        .answer-item.incorrect {
+            border-left-color: #f56565;
+            background: #fffbf0;
+        }
+
+        .answer-status {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .correct .answer-status {
+            color: #48bb78;
+        }
+
+        .incorrect .answer-status {
+            color: #f56565;
+        }
+
+        .progress-bar {
+            width: 100%;
+            height: 8px;
+            background: #e2e8f0;
+            border-radius: 4px;
+            overflow: hidden;
+            margin: 20px 0;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            transition: width 1s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="test-header">
+            <h1>🎓 Test de Niveau d'Anglais</h1>
+            <p>Évaluez votre niveau selon les standards Cambridge (A1 à C2)</p>
+            <p><strong>25 questions</strong> - Durée estimée : 15-20 minutes</p>
+        </div>
+
+        <form id="englishTest">
+            <!-- Questions will be inserted here by JavaScript -->
+        </form>
+
+        <div class="submit-container">
+            <button type="button" class="submit-btn" onclick="submitTest()">
+                📊 Voir mes résultats
+            </button>
+        </div>
+
+        <div id="results" class="results">
+            <!-- Results will be displayed here -->
+        </div>
+    </div>
+
+    <script>
+        const questions = [
+            // A1 Level Questions (1-4)
+            {
+                level: 'A1',
+                question: 'Hello, my name _____ Sarah.',
+                options: ['am', 'is', 'are', 'be'],
+                correct: 1
+            },
+            {
+                level: 'A1',
+                question: 'Where _____ you from?',
+                options: ['is', 'am', 'are', 'be'],
+                correct: 2
+            },
+            {
+                level: 'A1',
+                question: 'I _____ a teacher.',
+                options: ['am', 'is', 'are', 'have'],
+                correct: 0
+            },
+            {
+                level: 'A1',
+                question: 'This is _____ book.',
+                options: ['my', 'me', 'I', 'mine'],
+                correct: 0
+            },
+
+            // A2 Level Questions (5-8)
+            {
+                level: 'A2',
+                question: 'Yesterday I _____ to the cinema.',
+                options: ['go', 'went', 'going', 'goes'],
+                correct: 1
+            },
+            {
+                level: 'A2',
+                question: 'There _____ many people at the party.',
+                options: ['was', 'were', 'is', 'are'],
+                correct: 1
+            },
+            {
+                level: 'A2',
+                question: 'She _____ English very well.',
+                options: ['speak', 'speaks', 'speaking', 'spoke'],
+                correct: 1
+            },
+            {
+                level: 'A2',
+                question: 'I _____ like coffee. I prefer tea.',
+                options: ['no', 'not', "don't", "doesn't"],
+                correct: 2
+            },
+
+            // B1 Level Questions (9-13)
+            {
+                level: 'B1',
+                question: 'If I _____ rich, I would travel the world.',
+                options: ['am', 'was', 'were', 'will be'],
+                correct: 2
+            },
+            {
+                level: 'B1',
+                question: 'I have been living here _____ five years.',
+                options: ['since', 'for', 'during', 'from'],
+                correct: 1
+            },
+            {
+                level: 'B1',
+                question: 'The meeting has been _____ until next week.',
+                options: ['put off', 'put on', 'put up', 'put down'],
+                correct: 0
+            },
+            {
+                level: 'B1',
+                question: 'By the time you arrive, I _____ cooking dinner.',
+                options: ['finish', 'will finish', 'will have finished', 'finished'],
+                correct: 2
+            },
+            {
+                level: 'B1',
+                question: 'She suggested _____ a different approach.',
+                options: ['to try', 'trying', 'try', 'tried'],
+                correct: 1
+            },
+
+            // B2 Level Questions (14-18)
+            {
+                level: 'B2',
+                question: 'The project was completed _____ schedule despite the difficulties.',
+                options: ['ahead of', 'behind', 'according to', 'regardless of'],
+                correct: 0
+            },
+            {
+                level: 'B2',
+                question: 'I wish I _____ more attention during the lecture.',
+                options: ['paid', 'had paid', 'would pay', 'pay'],
+                correct: 1
+            },
+            {
+                level: 'B2',
+                question: 'The results were _____ disappointing than we had expected.',
+                options: ['much more', 'far more', 'a lot more', 'way more'],
+                correct: 1
+            },
+            {
+                level: 'B2',
+                question: '_____ the weather, the event was a great success.',
+                options: ['Despite', 'Although', 'However', 'Nevertheless'],
+                correct: 0
+            },
+            {
+                level: 'B2',
+                question: 'The new policy is _____ to be implemented next month.',
+                options: ['due', 'supposed', 'expected', 'likely'],
+                correct: 0
+            },
+
+            // C1 Level Questions (19-22)
+            {
+                level: 'C1',
+                question: 'The committee decided to _____ the proposal pending further investigation.',
+                options: ['shelve', 'shelf', 'shove', 'shift'],
+                correct: 0
+            },
+            {
+                level: 'C1',
+                question: 'Her argument was so _____ that it left little room for disagreement.',
+                options: ['compelling', 'compulsive', 'comprehensive', 'competitive'],
+                correct: 0
+            },
+            {
+                level: 'C1',
+                question: 'The documentary _____ light on the environmental issues facing the region.',
+                options: ['cast', 'shed', 'threw', 'put'],
+                correct: 1
+            },
+            {
+                level: 'C1',
+                question: '_____ as it may seem, the solution was actually quite simple.',
+                options: ['Paradoxical', 'Contradictory', 'Ironic', 'Contrary'],
+                correct: 0
+            },
+
+            // C2 Level Questions (23-25)
+            {
+                level: 'C2',
+                question: 'The politician\'s speech was full of _____ designed to avoid giving direct answers.',
+                options: ['euphemisms', 'circumlocutions', 'platitudes', 'aphorisms'],
+                correct: 1
+            },
+            {
+                level: 'C2',
+                question: 'The artist\'s work is characterized by its _____ nature, defying easy categorization.',
+                options: ['ineffable', 'inscrutable', 'indefatigable', 'inexorable'],
+                correct: 0
+            },
+            {
+                level: 'C2',
+                question: 'The researcher\'s methodology was criticized for its _____ approach to data collection.',
+                options: ['haphazard', 'systematic', 'meticulous', 'rigorous'],
+                correct: 0
+            }
+        ];
+
+        const levelDescriptions = {
+            'A1': 'Débutant - Vous pouvez comprendre et utiliser des expressions familières et quotidiennes.',
+            'A2': 'Élémentaire - Vous pouvez communiquer dans des tâches simples et routinières.',
+            'B1': 'Intermédiaire - Vous pouvez comprendre les points essentiels sur des sujets familiers.',
+            'B2': 'Intermédiaire supérieur - Vous pouvez comprendre le contenu essentiel de sujets concrets ou abstraits.',
+            'C1': 'Avancé - Vous pouvez comprendre une grande gamme de textes longs et exigeants.',
+            'C2': 'Maîtrise - Vous pouvez comprendre sans effort pratiquement tout ce que vous lisez ou entendez.'
+        };
+
+        function generateQuestions() {
+            const form = document.getElementById('englishTest');
+            
+            questions.forEach((q, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'question-container';
+                
+                questionDiv.innerHTML = `
+                    <div class="question-header">
+                        <div class="question-number">Question ${index + 1} / 25</div>
+                        <div class="question-text">${q.question}</div>
+                        <div class="question-level">Niveau : ${q.level}</div>
+                    </div>
+                    <div class="options">
+                        ${q.options.map((option, optIndex) => `
+                            <label class="option">
+                                <input type="radio" name="q${index}" value="${optIndex}">
+                                <span>${option}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                `;
+                
+                form.appendChild(questionDiv);
+                
+                // Add click handlers for options
+                const options = questionDiv.querySelectorAll('.option');
+                options.forEach(option => {
+                    option.addEventListener('click', function() {
+                        options.forEach(opt => opt.classList.remove('selected'));
+                        this.classList.add('selected');
+                        this.querySelector('input').checked = true;
+                    });
+                });
+            });
+        }
+
+        function submitTest() {
+            const formData = new FormData(document.getElementById('englishTest'));
+            let score = 0;
+            let levelScores = { A1: 0, A2: 0, B1: 0, B2: 0, C1: 0, C2: 0 };
+            let levelTotals = { A1: 0, A2: 0, B1: 0, B2: 0, C1: 0, C2: 0 };
+            let answers = [];
+
+            questions.forEach((q, index) => {
+                levelTotals[q.level]++;
+                const userAnswer = formData.get(`q${index}`);
+                const isCorrect = userAnswer !== null && parseInt(userAnswer) === q.correct;
+                
+                if (isCorrect) {
+                    score++;
+                    levelScores[q.level]++;
+                }
+
+                answers.push({
+                    question: q.question,
+                    level: q.level,
+                    userAnswer: userAnswer !== null ? q.options[parseInt(userAnswer)] : 'Non répondu',
+                    correctAnswer: q.options[q.correct],
+                    isCorrect: isCorrect
+                });
+            });
+
+            // Determine overall level
+            let level = 'A1';
+            const scorePercentage = (score / questions.length) * 100;
+            
+            if (scorePercentage >= 95) level = 'C2';
+            else if (scorePercentage >= 85) level = 'C1';
+            else if (scorePercentage >= 70) level = 'B2';
+            else if (scorePercentage >= 55) level = 'B1';
+            else if (scorePercentage >= 35) level = 'A2';
+            else level = 'A1';
+
+            displayResults(score, level, scorePercentage, answers, levelScores, levelTotals);
+        }
+
+        function displayResults(score, level, percentage, answers, levelScores, levelTotals) {
+            const resultsDiv = document.getElementById('results');
+            
+            resultsDiv.innerHTML = `
+                <div class="score-display">
+                    <div class="score-circle">${Math.round(percentage)}%</div>
+                    <div class="level-badge level-${level}">Niveau ${level}</div>
+                    <div class="level-description">
+                        <strong>${levelDescriptions[level]}</strong>
+                    </div>
+                    <p style="margin-top: 15px; font-size: 1.1em;">
+                        <strong>${score}/25 questions correctes</strong>
+                    </p>
+                </div>
+
+                <div class="progress-bar">
+                    <div class="progress-fill" style="width: ${percentage}%"></div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(120px, 1fr)); gap: 15px; margin: 20px 0;">
+                    ${Object.keys(levelTotals).map(lvl => `
+                        <div style="text-align: center; padding: 10px; background: #f8f9fa; border-radius: 8px;">
+                            <div style="font-weight: bold; color: #4a5568;">${lvl}</div>
+                            <div style="color: #718096;">${levelScores[lvl]}/${levelTotals[lvl]}</div>
+                        </div>
+                    `).join('')}
+                </div>
+
+                <div class="answers-section">
+                    <h3 style="margin-bottom: 20px; color: #4a5568;">📝 Détail des réponses</h3>
+                    ${answers.map((answer, index) => `
+                        <div class="answer-item ${answer.isCorrect ? 'correct' : 'incorrect'}">
+                            <div class="answer-status">
+                                ${answer.isCorrect ? '✅ Correct' : '❌ Incorrect'} - Question ${index + 1} (${answer.level})
+                            </div>
+                            <div style="margin-bottom: 10px; font-weight: 500;">${answer.question}</div>
+                            <div style="color: #718096;">
+                                <strong>Votre réponse :</strong> ${answer.userAnswer}<br>
+                                <strong>Réponse correcte :</strong> ${answer.correctAnswer}
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+            
+            resultsDiv.classList.add('show');
+            resultsDiv.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        // Initialize the test when page loads
+        window.onload = function() {
+            generateQuestions();
+        };
+    </script>
+</body>
+</html>
